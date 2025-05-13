@@ -1,0 +1,27 @@
+{
+  "name": "vnpay-escrow-app",
+  "version": "1.0.0",
+  "description": "Example escrow payment app using VNPay API",
+  "main": "dist/escrow-app.js",
+  "scripts": {
+    "dev": "tsx watch app.ts",
+    "build": "tsc && cp -r src/templates dist/templates",
+    "start": "node dist/escrow-app.js",
+    "test": "jest"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.17",
+    "@types/node": "^20.2.3",
+    "@types/uuid": "^9.0.1",
+    "tsx": "^3.12.7",
+    "typescript": "^5.0.4",
+    "vnpay": "^2.2.0"
+  }
+}
