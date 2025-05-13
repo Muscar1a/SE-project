@@ -1,5 +1,6 @@
 #!/bin/bash
 
+echo "you need to npm run dev first"
 curl -X POST http://localhost:3000/escrow/create \
   -H "Content-Type: application/json" \
   -d '{
