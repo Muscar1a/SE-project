@@ -1,0 +1,42 @@
+{
+  "name": "mern-auth-2fa-server",
+  "version": "1.0.0",
+  "description": "MERN authentication server with 2FA",
+  "main": "dist/server.js",
+  "type": "module",
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "npm run clean && tsc",
+    "start": "node dist/server.js",
+    "watch": "tsc --watch",
+    "build:dev": "tsc && node dist/server.js",
+    "init-db": "tsc && node dist/scripts/init-db.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^7.5.0",
+    "otplib": "^12.0.1",
+    "qrcode": "^1.5.3",
+    "uuid": "^9.0.0",
+    "vnpay": "^2.2.0"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/jsonwebtoken": "^9.0.5",
+    "@types/node": "^20.11.24",
+    "@types/qrcode": "^1.5.5",
+    "@types/uuid": "^9.0.8",
+    "concurrently": "^8.2.1",
+    "nodemon": "^3.0.1",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

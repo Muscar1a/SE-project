@@ -1,0 +1,23 @@
+services:
+  my-mongodb:
+    image: mongo
+    container_name: mongo-webdev
+    ports:
+      - 192.168.194.130:27017:27017
+    environment:
+      - MONGO_INITDB_DATABASE=webdev
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin
+    volumes:
+      - ./mongo-entrypoint:/docker-entrypoint-initdb.d
+      - mongodb:/data/db
+      - mongoconfig:/data/configdb
+    networks:
+      - mongo_net
+volumes:
+  mongodb:
+  mongoconfig:
+
+networks:
+  mongo_net:
+    driver: bridge
