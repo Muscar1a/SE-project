@@ -7,6 +7,8 @@ import 'dotenv/config';
 import userRoutes from './routes/users.js';
 import authRoutes from './routes/auth.js';
 import escrowRoutes from './routes/escrow.js';
+import partnerRoutes from './routes/partner.js';
+import adminRoutes from './routes/admin.js';
 
 // Get __dirname equivalent in ESM
 const __filename = fileURLToPath(import.meta.url);
@@ -26,9 +28,20 @@ app.use(express.json());
 app.use('/api/users', userRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/escrow', escrowRoutes);
+app.use('/api/partner', partnerRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Serve static assets for templates
 app.use('/templates', express.static(path.join(__dirname, 'templates')));
+
+// Health check endpoint
+app.get('/api/health', (_req: Request, res: Response) => {
+  res.json({
+    success: true,
+    message: 'Server is running',
+    timestamp: new Date().toISOString()
+  });
+});
 
 // Serve static assets in production
 if (process.env.NODE_ENV === 'production') {
@@ -42,3 +55,5 @@ if (process.env.NODE_ENV === 'production') {
 const PORT: number = parseInt(process.env.PORT || '5000', 10);
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+export default app;

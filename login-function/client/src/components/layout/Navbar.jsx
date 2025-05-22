@@ -20,6 +20,14 @@ const Navbar = () => {
       <li>
         <Link to='/escrow'>Escrow</Link>
       </li>
+      {/* Admin Links - In production, you'd check for admin role */}
+      <li className="dropdown">
+        <Link to="#" className="dropdown-toggle">Admin</Link>
+        <div className="dropdown-menu">
+          <Link to='/admin/partners'>Partners</Link>
+          <Link to='/admin/api-docs'>API Docs</Link>
+        </div>
+      </li>
       <li>
         <a onClick={onLogout} href="#!">
           <i className="fas fa-sign-out-alt"></i> <span className="hide-sm">Logout</span>

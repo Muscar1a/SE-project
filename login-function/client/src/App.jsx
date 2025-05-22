@@ -20,6 +20,10 @@ import EscrowCreate from './pages/escrow/Create';
 import EscrowDetails from './pages/escrow/Details';
 import EscrowList from './pages/escrow/List';
 
+// Admin Pages
+import AdminPartners from './pages/admin/Partners';
+import ApiDocumentation from './pages/admin/ApiDocumentation';
+
 // Context
 import AuthState from './context/auth/AuthState';
 import AlertState from './context/alert/AlertState';
@@ -76,6 +80,23 @@ const App = () => {
                     element={
                       <PrivateRoute>
                         <EscrowDetails />
+                      </PrivateRoute>
+                    }
+                  />
+                  {/* Admin Routes */}
+                  <Route
+                    path="/admin/partners"
+                    element={
+                      <PrivateRoute>
+                        <AdminPartners />
+                      </PrivateRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/api-docs"
+                    element={
+                      <PrivateRoute>
+                        <ApiDocumentation />
                       </PrivateRoute>
                     }
                   />
