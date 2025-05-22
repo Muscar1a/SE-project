@@ -41,12 +41,18 @@ const Profile = () => {
 
   const onVerify2FASetup = e => {
     e.preventDefault();
+    if (!verificationCode.trim()) {
+      setAlert('Please enter verification code', 'danger');
+      return;
+    }
     verify2FASetup(verificationCode);
     setVerificationCode('');
   };
 
   const onDisable2FA = () => {
-    disable2FA();
+    if (window.confirm('Are you sure you want to disable 2FA? This will make your account less secure.')) {
+      disable2FA();
+    }
   };
 
   const onChange = e => setVerificationCode(e.target.value);
@@ -65,67 +71,85 @@ const Profile = () => {
         <div className="card-header">
           <h2>Profile</h2>
         </div>
-        <p><strong>Username:</strong> {user.username}</p>
-        <p><strong>Email:</strong> {user.email}</p>
-        <p><strong>2FA Status:</strong> {user.isTwoFactorEnabled ? 'Enabled' : 'Disabled'}</p>
+        <div className="card-body">
+          <p><strong>Name:</strong> {user.name}</p>
+          <p><strong>Email:</strong> {user.email}</p>
+          <p><strong>2FA Status:</strong>
+            <span className={`badge ${user.isTwoFactorEnabled ? 'badge-success' : 'badge-warning'}`}>
+              {user.isTwoFactorEnabled ? 'Enabled' : 'Disabled'}
+            </span>
+          </p>
 
-        {!user.isTwoFactorEnabled && !twoFactorSecret && (
-          <button onClick={onEnable2FA} className="btn btn-primary">
-            Enable Two-Factor Authentication
-          </button>
-        )}
-
-        {user.isTwoFactorEnabled && (
-          <button onClick={onDisable2FA} className="btn btn-danger">
-            Disable Two-Factor Authentication
-          </button>
-        )}
-
-        {twoFactorSecret && !user.isTwoFactorEnabled && (
-          <div className="setup-2fa">
-            <h3>Set up Two-Factor Authentication</h3>
-            <p>
-              Scan the QR code below with your authenticator app (like Google Authenticator,
-              Authy, or Microsoft Authenticator).
-            </p>
-            <div className="qr-container">
-              <img src={qrCodeUrl} alt="QR Code" className="qr-code" />
-            </div>
-            <p>
-              Or manually enter this code in your authenticator app: <strong>{twoFactorSecret}</strong>
-            </p>
-            <form onSubmit={onVerify2FASetup}>
-              <div className="form-group">
-                <label htmlFor="verificationCode">Verification Code</label>
-                <input
-                  type="text"
-                  name="verificationCode"
-                  value={verificationCode}
-                  onChange={onChange}
-                  placeholder="Enter 6-digit code from your app"
-                  required
-                />
-              </div>
-              <button type="submit" className="btn btn-success">
-                Verify and Enable 2FA
+          {!user.isTwoFactorEnabled && !twoFactorSecret && (
+            <div className="mt-3">
+              <button onClick={onEnable2FA} className="btn btn-primary">
+                Enable Two-Factor Authentication
               </button>
-            </form>
-          </div>
-        )}
-
-        <div className="protected-content-section">
-          <h3>Protected Content</h3>
-          {!showProtectedContent ? (
-            <button onClick={onViewProtectedContent} className="btn btn-secondary">
-              View Protected Content
-            </button>
-          ) : (
-            <div className="card welcome-container">
-              <h1>Hello World!</h1>
-              <p>This is a protected route that requires authentication.</p>
-              <p>You've successfully logged in{user.isTwoFactorEnabled ? ' with 2FA' : ''}!</p>
             </div>
           )}
+
+          {user.isTwoFactorEnabled && (
+            <div className="mt-3">
+              <button onClick={onDisable2FA} className="btn btn-danger">
+                Disable Two-Factor Authentication
+              </button>
+            </div>
+          )}
+
+          {twoFactorSecret && !user.isTwoFactorEnabled && (
+            <div className="setup-2fa mt-3">
+              <h3>Set up Two-Factor Authentication</h3>
+              <p>
+                Scan the QR code below with your authenticator app (like Google Authenticator,
+                Authy, or Microsoft Authenticator).
+              </p>
+              {qrCodeUrl && (
+                <div className="qr-container">
+                  <img src={qrCodeUrl} alt="QR Code" className="qr-code" />
+                </div>
+              )}
+              <div className="mt-3">
+                <p>
+                  Or manually enter this code in your authenticator app:
+                  <code className="ml-2">{twoFactorSecret}</code>
+                </p>
+              </div>
+              <form onSubmit={onVerify2FASetup} className="mt-3">
+                <div className="form-group">
+                  <label htmlFor="verificationCode">Verification Code</label>
+                  <input
+                    type="text"
+                    name="verificationCode"
+                    value={verificationCode}
+                    onChange={onChange}
+                    placeholder="Enter 6-digit code from your app"
+                    maxLength="6"
+                    pattern="[0-9]{6}"
+                    required
+                  />
+                </div>
+                <button type="submit" className="btn btn-success">
+                  Verify and Enable 2FA
+                </button>
+              </form>
+            </div>
+          )}
+
+          <div className="protected-content-section mt-4">
+            <h3>Protected Content</h3>
+            {!showProtectedContent ? (
+              <button onClick={onViewProtectedContent} className="btn btn-secondary">
+                View Protected Content
+              </button>
+            ) : (
+              <div className="card welcome-container">
+                <h1>Hello World!</h1>
+                <p>This is a protected route that requires authentication.</p>
+                <p>Welcome, {user.name}!</p>
+                <p>You've successfully logged in{user.isTwoFactorEnabled ? ' with 2FA' : ''}!</p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

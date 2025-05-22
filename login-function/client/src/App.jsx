@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 // Components
 import Navbar from './components/layout/Navbar';
 import Alert from './components/layout/Alert';
+import AuthDebug from './components/debug/AuthDebug'; // Add this for debugging
 
 // Pages
 import Home from './pages/Home';
@@ -26,6 +27,10 @@ import EscrowState from './context/escrow/EscrowState';
 
 import './App.css';
 
+// Make axios available globally for debugging
+import axios from 'axios';
+window.axios = axios;
+
 const App = () => {
   return (
     <AuthState>
@@ -34,6 +39,7 @@ const App = () => {
           <Router>
             <div className="App">
               <Navbar />
+              <AuthDebug /> {/* Add this for debugging */}
               <div className="container">
                 <Alert />
                 <Routes>
