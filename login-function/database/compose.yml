@@ -3,7 +3,7 @@ services:
     image: mongo
     container_name: mongo-webdev
     ports:
-      - 192.168.194.130:27017:27017
+      - 0.0.0.0:27017:27017
     environment:
       - MONGO_INITDB_DATABASE=webdev
       - MONGO_INITDB_ROOT_USERNAME=admin
