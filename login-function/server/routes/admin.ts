@@ -8,6 +8,8 @@ import {
   togglePartnerStatus,
   deletePartner
 } from '../controllers/admin.js';
+import { getDashboardStats } from '../controllers/adminDashboard.js';
+import { getAllTransactions } from '../controllers/transaction.js';
 
 const router = express.Router();
 
