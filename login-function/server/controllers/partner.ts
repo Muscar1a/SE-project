@@ -8,6 +8,7 @@ import {
 } from 'vnpay';
 import EscrowTransaction from '../models/EscrowTransaction.js';
 import Partner, { IPartner } from '../models/Partner.js';
+import Notification from '../models/Notification.js';
 
 // Define interfaces
 interface IPartnerRequest extends Request {
@@ -59,18 +60,28 @@ export const createPartnerEscrow = async (
 
     // Generate unique order ID
     const orderId = `${partner._id.toString().slice(-6)}-${uuidv4().replaceAll('-', '').slice(0, 16)}`;
+    const buyerId = Partner.findOne({ customerEmail }).select("_id");
+    const sellerId = partner._id.toString();
 
     // Create escrow transaction
     const escrowTransaction = new EscrowTransaction({
       orderId,
-      buyerId: customerEmail, // Use customer email as buyer ID for partner transactions
-      sellerId: partner._id.toString(),
+      buyerId,
+      sellerId,
       amount,
       description,
       status: 'pending'
     });
 
     await escrowTransaction.save();
+
+    const buyerNotification = new Notification({
+      notification_id: `${uuidv4()}`,
+      user_id: buyerId,
+      message: `Escrow ${orderId} is pending`,
+    })
+
+    await buyerNotification.save();
 
     // Create VNPay payment URL
     const paymentUrl = vnpay.buildPaymentUrl({
