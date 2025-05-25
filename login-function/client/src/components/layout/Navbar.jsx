@@ -18,6 +18,9 @@ const Navbar = () => {
         <Link to='/profile'>Profile</Link>
       </li>
       <li>
+        <Link to='/admin/dashboard'>Dashboard</Link>
+      </li>
+      <li>
         <Link to='/escrow'>Escrow</Link>
       </li>
       {/* Admin Links - In production, you'd check for admin role */}

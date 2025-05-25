@@ -10,7 +10,9 @@
     "start": "node dist/server.js",
     "watch": "tsc --watch",
     "build:dev": "tsc && node dist/server.js",
-    "init-db": "tsc && node dist/scripts/init-db.js"
+    "init-db": "tsc && node dist/scripts/init-db.js",
+    "serve": "nodemon dist/server.js",
+    "dev": "concurrently \"npm run watch\" \"npm run serve\" "
   },
   "dependencies": {
     "axios": "^1.9.0",
@@ -19,11 +21,15 @@
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.2",
+    "mern-auth-2fa-server": "file:",
     "mongoose": "^7.5.0",
     "otplib": "^12.0.1",
     "qrcode": "^1.5.3",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
     "uuid": "^9.0.0",
-    "vnpay": "^2.2.0"
+    "vnpay": "^2.2.0",
+    "winston": "^3.17.0"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",

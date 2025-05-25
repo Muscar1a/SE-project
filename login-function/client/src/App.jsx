@@ -26,6 +26,7 @@ import DisputeInitiate from './pages/escrow/DisputeInitiate';
 // Admin Pages
 import AdminPartners from './pages/admin/Partners';
 import ApiDocumentation from './pages/admin/ApiDocumentation';
+import DashboardPage from './pages/admin/Dashboard';
 
 // Context
 import AuthState from './context/auth/AuthState';
@@ -111,6 +112,15 @@ const App = () => {
                     }
                   />
                   {/* Admin Routes */}
+
+                  <Route
+                    path="/admin/dashboard"
+                    element={
+                      <PrivateRoute>
+                        <DashboardPage />
+                      </PrivateRoute>
+                    }
+                  />
                   <Route
                     path="/admin/partners"
                     element={
