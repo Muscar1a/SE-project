@@ -1,5 +1,6 @@
 import { Router } from 'express';
-import { initiateDispute, respondDispute, resolveDispute, getDisputeStatus } from '../controllers/dispute.js';
+import { initiateDispute, respondDispute, resolveDispute, getDisputeStatus, listAllDisputes } from '../controllers/dispute.js';
+import { admin as adminAuth } from '../middleware/admin.js';
 
 const router = Router();
 
@@ -11,5 +12,7 @@ router.post('/respond', respondDispute);
 router.post('/resolve', resolveDispute);
 // Get dispute status
 router.get('/:disputeId/status', getDisputeStatus);
+// Admin: List all disputes
+router.get('/all', adminAuth, listAllDisputes);
 
 export default router;

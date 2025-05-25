@@ -83,3 +83,13 @@ export const getDisputeStatus = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Failed to get dispute status' });
   }
 };
+
+// List all disputes (admin)
+export const listAllDisputes = async (req: Request, res: Response) => {
+  try {
+    const disputes = await Dispute.find().populate('escrowId');
+    res.json({ success: true, disputes });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch disputes' });
+  }
+};
