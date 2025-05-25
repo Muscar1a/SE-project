@@ -170,7 +170,7 @@ const AdminPartners = () => {
           ) : (
             <div className="partners-list">
               {partners.map(partner => (
-                <div key={partner.id} className="partner-item">
+                <div key={partner._id} className="partner-item">
                   <div className="partner-header">
                     <h3>{partner.companyName}</h3>
                     <div className="partner-status">
@@ -190,13 +190,13 @@ const AdminPartners = () => {
                   <div className="partner-actions">
                     <button
                       className="btn btn-secondary"
-                      onClick={() => viewPartnerDetails(partner.id)}
+                      onClick={() => viewPartnerDetails(partner._id)}
                     >
                       View Details
                     </button>
                     <button
                       className={`btn ${partner.isActive ? 'btn-warning' : 'btn-success'}`}
-                      onClick={() => togglePartnerStatus(partner.id)}
+                      onClick={() => togglePartnerStatus(partner._id)}
                     >
                       {partner.isActive ? 'Deactivate' : 'Activate'}
                     </button>
@@ -257,7 +257,7 @@ const AdminPartners = () => {
                     <code>{selectedPartner.partner.secretToken}</code>
                     <button
                       className="btn btn-warning"
-                      onClick={() => regenerateToken(selectedPartner.partner.id)}
+                      onClick={() => regenerateToken(selectedPartner.partner._id)}
                     >
                       Regenerate
                     </button>
