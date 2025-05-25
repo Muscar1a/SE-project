@@ -15,35 +15,43 @@ const StatCard = ({ title, value, color = 'bg-indigo-500' }) => (
 );
 
 const DashboardPage = () => {
-  // const [allTransactions, setAllTransactions] = useState(allMockTransactions);
-  const [allTransactions, setAllTransactions] = useState([]);
+  // const [allTransactions, setAllTransactions] = useState([]);
+  const [transactionsForCurrentPage, setTransactionsForCurrentPage] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('All Status');
-  const [sortOrder, setSortOrder] = useState('Latest');
+  const [sortOrder, setSortOrder] = useState('desc');
+  const [sortBy, setSortBy] = useState('createdAt');  // Mặc định API là 'createdAt'
+
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10); // Mặc định là 10 như trong hình
+  const [itemsPerPage, setItemsPerPage] = useState(10); // Default is 10
+
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalTransactions, setTotalTransactions] = useState(0);
+
   const [allSelectedInPage, setAllSelectedInPage] = useState(false);
 
-
-
-  // ======================================== //
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [errorStats, setErrorStats] = useState(null);
+
+  const [loadingTransactions, setLoadingTransactions] = useState(true);
+  const [errorTransactions, setErrorTransactions] = useState(null);
+
+  /// ===== Fetching dashboard statistics =====
+
+
 
   useEffect(() => {
-    console.log("===============================================================");
-
     fetchDashboardStats();
   }, []);
 
   const fetchDashboardStats = async () => {
     setLoading(true);
-    setError(null);
+    setErrorStats(null);
     const token = localStorage.getItem("token");
 
     if (!token) {
-      setError("No authentication token found.");
+      setErrorStats("No authentication token found.");
       setLoading(false);
       // move to login page
       return;
@@ -59,98 +67,158 @@ const DashboardPage = () => {
       if (result.data) {
         setStats(result.data);
       }
-
     } catch (err) {
-      setError(err.message || "Unknown error occurred while fetching dashboard stats.");
+      setErrorStats(err.message || "Unknown error occurred while fetching dashboard stats.");
       console.error("Error fetching dashboard stats:", err);
     } finally {
       setLoading(false);
     }
   };
 
-  // ======================================== //
+  // ===== Get All Transactions =====
 
-  const filteredTransactions = useMemo(() => {
-    let sortedTransactions = [...allTransactions];
+  useEffect(() => {
+    fetchTransactions();
+  }, [currentPage, itemsPerPage, sortBy, sortOrder, statusFilter, searchTerm]);
 
-    if (sortOrder === 'Oldest') {
-      sortedTransactions.sort((a, b) => new Date(a.date.split(' - ')[0]) - new Date(b.date.split(' - ')[0]));
-    } else if (sortOrder === 'Latest') {
-      sortedTransactions.sort((a, b) => new Date(b.date.split(' - ')[0]) - new Date(a.date.split(' - ')[0]));
-    } else if (sortOrder === 'Amount (High-Low)') {
-      sortedTransactions.sort((a, b) => b.amount - a.amount);
-    } else if (sortOrder === 'Amount (Low-High)') {
-      sortedTransactions.sort((a, b) => a.amount - b.amount);
+  const fetchTransactions = async () => {
+    setLoadingTransactions(true);
+    setErrorTransactions(null);
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      setErrorTransactions("No authentication token found.");
+      setLoadingTransactions(false);
+      return;
     }
 
-    return sortedTransactions
-      .filter(t => t.paymentName.toLowerCase().includes(searchTerm.toLowerCase()) || t.id.toLowerCase().includes(searchTerm.toLowerCase()))
-      .filter(t => statusFilter === 'All Status' || t.status === statusFilter);
-  }, [allTransactions, searchTerm, statusFilter, sortOrder]);
+    const params = {
+      page: currentPage,
+      limit: itemsPerPage,
+      sortBy: sortBy,
+      sortOrder: sortOrder,
+      // Chỉ gửi status nếu nó không phải là 'All Status'
+      ...(statusFilter !== 'All Status' && { status: statusFilter.toLowerCase() }),
+      // Gửi searchTerm (có thể là orderId hoặc tìm kiếm chung - API của bạn đang tìm orderId)
+      ...(searchTerm && { orderId: searchTerm }),
+      // Bạn có thể thêm các filter khác ở đây nếu TransactionControls hỗ trợ chúng
+      // minAmount, maxAmount, startDate, endDate, buyerId, sellerId
+    };
 
-  const paginatedTransactions = useMemo(() => {
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    return filteredTransactions.slice(startIndex, startIndex + itemsPerPage);
-  }, [filteredTransactions, currentPage, itemsPerPage]);
+    try {
+      const response = await axios.get(`${API_URL}/api/escrow`, {
+        // headers: { Authorization: `Bearer ${token}` },
+        params: params // Gửi các tham số query
+      });
+      const result = response.data;
 
-  const totalPages = Math.ceil(filteredTransactions.length / itemsPerPage);
+      if (!result.success || !result.data) {
+        throw new Error(result.msg || 'Failed to fetch transactions or no data returned');
+      }
 
-  const handlePageChange = (page) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
+      const { transactions, currentPage: apiCurrentPage, totalPages: apiTotalPages, totalTransactions: apiTotalTransactions } = result.data;
+
+      const processedTransactions = transactions.map(tx => ({
+        // Dựa trên ví dụ response đơn lẻ của bạn:
+        // transaction object nằm trong result.data.transaction
+        // Nhưng getAllTransactions trả về một mảng transactions trong result.data.transactions
+        _id: tx._id,
+        id: tx.orderId, // Sử dụng orderId làm ID chính hiển thị
+        paymentName: tx.description || `Order ${tx.orderId}`, // 'Payment Name' có thể là description
+        // Bỏ icon
+        amount: parseFloat(tx.amount) || 0, // Giữ nguyên giá trị số
+        // Thêm một trường mới để hiển thị amount đã định dạng
+        displayAmount: `${(parseFloat(tx.amount) || 0).toLocaleString('vi-VN')} VND`,
+        status: tx.status ? tx.status.charAt(0).toUpperCase() + tx.status.slice(1) : 'Unknown',
+        date: tx.createdAt ? new Date(tx.createdAt).toLocaleString('en-US', {
+          year: 'numeric', month: 'long', day: 'numeric',
+          hour: 'numeric', minute: '2-digit', hour12: true
+        }) : 'N/A',
+        // paidAt: tx.paidAt ? new Date(tx.paidAt).toLocaleString(...) : null, // Thêm nếu cần hiển thị
+        vnpayTransactionNo: tx.vnpayTransactionNo, // Thêm nếu cần hiển thị
+        buyerId: tx.buyerId, // Thêm nếu cần
+        sellerId: tx.sellerId, // Thêm nếu cần
+        selected: false,
+        originalData: tx, // Giữ lại dữ liệu gốc
+      }));
+
+      setTransactionsForCurrentPage(processedTransactions);
+      setTotalPages(apiTotalPages);
+      setTotalTransactions(apiTotalTransactions);
+    } catch (err) {
+      const errorMessage = err.response?.data?.msg || err.message || "Unknown error fetching transactions.";
+      setErrorTransactions(errorMessage);
+      console.error("Error fetching transactions:", err);
+      setTransactionsForCurrentPage([]); // Xóa dữ liệu cũ nếu có lỗi
+      setTotalPages(0);
+      setTotalTransactions(0);
+    } finally {
+      setLoadingTransactions(false);
     }
   };
 
+
+  // ======================================= //
+
+
+  // const totalPages = Math.ceil(filteredTransactions.length / itemsPerPage);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  // Handler for changing sort (TransactionControls sẽ gọi)
+  const handleSortChange = (newSortBy, newSortOrder) => {
+    setSortBy(newSortBy);
+    setSortOrder(newSortOrder);
+    setCurrentPage(1); // Reset về trang 1 khi đổi sort
+  };
+
+  // Handler for status filter (TransactionControls sẽ gọi)
+  const handleStatusFilterChange = (newStatus) => {
+    setStatusFilter(newStatus);
+    setCurrentPage(1); // Reset về trang 1 khi đổi filter
+  };
+
+  const handleSearchChange = (newSearchTerm) => {
+    setSearchTerm(newSearchTerm);
+    setCurrentPage(1); // Reset về trang 1 khi tìm kiếm
+  };
+
+
   const handleSelectTransaction = (id) => {
-    const newTransactions = allTransactions.map(t =>
+    const newTransactions = transactionsForCurrentPage.map(t =>
       t.id === id ? { ...t, selected: !t.selected } : t
     );
-    setAllTransactions(newTransactions);
+    setTransactionsForCurrentPage(newTransactions);
   };
 
   const handleSelectAllInPage = () => {
     const newSelectState = !allSelectedInPage;
-    const pageTransactionIds = paginatedTransactions.map(t => t.id);
-
-    const newTransactions = allTransactions.map(t =>
-      pageTransactionIds.includes(t.id) ? { ...t, selected: newSelectState } : t
-    );
-    setAllTransactions(newTransactions);
+    const newTransactions = transactionsForCurrentPage.map(t => ({ ...t, selected: newSelectState }));
+    setTransactionsForCurrentPage(newTransactions);
     setAllSelectedInPage(newSelectState);
   };
 
-  // Update allSelectedInPage status when paginatedTransactions or their selection changes
   useEffect(() => {
-    if (paginatedTransactions.length > 0) {
-      setAllSelectedInPage(paginatedTransactions.every(t => t.selected));
+    if (transactionsForCurrentPage.length > 0) {
+      setAllSelectedInPage(transactionsForCurrentPage.every(t => t.selected));
     } else {
       setAllSelectedInPage(false);
     }
-  }, [paginatedTransactions]);
-
-  // Reset current page if filters change and current page becomes invalid
-  useEffect(() => {
-    if (currentPage > totalPages && totalPages > 0) {
-      setCurrentPage(totalPages);
-    } else if (currentPage === 0 && totalPages > 0) {
-      setCurrentPage(1);
-    } else if (totalPages === 0) {
-      setCurrentPage(1); // Or 0 if you prefer, but 1 makes sense for display
-    }
-  }, [totalPages, currentPage]);
+  }, [transactionsForCurrentPage]);
 
 
-  
-  if (loading) {
-    return <div className="p-4">Loading dashboard statistics...</div>;
+  if (loading || loadingTransactions) {
+    let loadingMessage = "";
+    if (loading && loadingTransactions) loadingMessage = "Loading dashboard data...";
+    else if (loading) loadingMessage = "Loading dashboard statistics...";
+    else if (loadingTransactions) loadingMessage = "Loading transactions...";
+    return <div className="p-6 text-center text-gray-600">{loadingMessage}</div>;
   }
 
-  if (error) {
-    return <div className="p-4 text-red-500">Error: {error}</div>;
-  }
-
-  if (!stats) {
-    return <div className="p-4">No statistics data available.</div>;
+  if (errorTransactions) {
+    return <div className="p-6 text-center text-red-500">Error loading transactions: {errorTransactions}</div>;
   }
 
   return (
@@ -158,44 +226,67 @@ const DashboardPage = () => {
       <div className="dashboard-container">
         <h1 className="main-title">Transactions</h1>
 
-        <div className="summary-cards-grid">
-          <StatCard title="Total Transactions" value={stats.transactions.total} />
-          <StatCard title="Pending" value={stats.transactions.pending} color="bg-yellow-500" />
-          <StatCard title="Paid" value={stats.transactions.paid} color="bg-blue-500" />
-          <StatCard title="Completed" value={stats.transactions.completed} color="bg-green-500" />
-          <StatCard title="Refunded" value={stats.transactions.refunded} color="bg-red-500" />
-          <StatCard title="Cancelled" value={stats.transactions.cancelled} color="bg-gray-500" />
-        </div>
+        {stats && !errorStats && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
+            <StatCard title="Total Escrows" value={stats.transactions?.total || 0} />
+            <StatCard title="Pending" value={stats.transactions?.pending || 0} color="bg-yellow-500" />
+            <StatCard title="Paid" value={stats.transactions?.paid || 0} color="bg-blue-500" />
+            <StatCard title="Completed" value={stats.transactions?.completed || 0} color="bg-green-500" />
+            <StatCard title="Refunded" value={stats.transactions?.refunded || 0} color="bg-red-500" />
+            <StatCard title="Cancelled" value={stats.transactions?.cancelled || 0} color="bg-gray-500" />
+          </div>
+        )}
+        {errorStats && (
+          <div className="mb-6 p-4 bg-red-100 text-red-700 rounded-md">
+            Could not load dashboard statistics: {errorStats}
+          </div>
+        )}
 
         <div className="transactions-section">
           <div className="transactions-header">
             <h2 className="transactions-title">Transactions</h2>
             <TransactionControls
               searchTerm={searchTerm}
-              onSearchChange={(value) => { setSearchTerm(value); setCurrentPage(1); }}
+              // onSearchChange={(value) => { setSearchTerm(value); setCurrentPage(1); }}
+              onSearchChange={handleSearchChange} // Sử dụng handler mới
               statusFilter={statusFilter}
-              onStatusFilterChange={(value) => { setStatusFilter(value); setCurrentPage(1); }}
+              // onStatusFilterChange={(value) => { setStatusFilter(value); setCurrentPage(1); }}
+              onStatusFilterChange={handleStatusFilterChange} // Sử dụng handler mới
               sortOrder={sortOrder}
-              onSortOrderChange={(value) => { setSortOrder(value); setCurrentPage(1); }}
+              sortBy={sortBy} // Truyền sortBy xuống
+              // onSortOrderChange={(value) => { setSortOrder(value); setCurrentPage(1); }}
+              // Cần cập nhật TransactionControls để nhận sortBy và có thể cả onSortByChange
+              onSortChange={handleSortChange} // Một hàm chung cho cả sortBy và sortOrder
             />
           </div>
 
-          <TransactionTable
-            transactions={paginatedTransactions}
-            allSelected={allSelectedInPage}
-            onSelectAll={handleSelectAllInPage}
-            onSelectTransaction={handleSelectTransaction}
-          />
+          {!errorTransactions && (
+            <>
+              <TransactionTable
+                transactions={transactionsForCurrentPage}
+                allSelected={allSelectedInPage}
+                onSelectAll={handleSelectAllInPage}
+                onSelectTransaction={handleSelectTransaction}
+                currentSortBy={sortBy}
+                currentSortOrder={sortOrder}
+                // Đảm bảo TransactionTable sử dụng 'displayAmount' để hiển thị số tiền
+              />
 
-          {filteredTransactions.length > 0 && (
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={handlePageChange}
-              itemsPerPage={itemsPerPage}
-              totalItems={allTransactions.length} // This could be total items before filtering
-              filteredItemsCount={filteredTransactions.length} // Total items after filtering
-            />
+              {transactionsForCurrentPage.length > 0 && totalPages > 0 && (
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={handlePageChange}
+                  itemsPerPage={itemsPerPage}
+                  filteredItemsCount={totalTransactions}
+                />
+              )}
+              {transactionsForCurrentPage.length === 0 && !loadingTransactions && (
+                 <p className="text-center text-gray-500 py-4">
+                    {totalTransactions > 0 ? "No transactions match your current filters." : "No transactions found."}
+                 </p>
+              )}
+            </>
           )}
         </div>
       </div>

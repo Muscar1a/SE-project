@@ -35,7 +35,7 @@ const TransactionRow = ({ transaction, onSelectTransaction }) => {
         </div>
       </td>
       <td className={transaction.amount >= 0 ? 'amount-positive' : 'amount-negative'}>
-        {transaction.amount >= 0 ? '+' : ''}${Math.abs(transaction.amount).toLocaleString()}
+        {transaction.amount >= 0 ? '' : ''}{Math.abs(transaction.amount).toLocaleString()} VNĐ
       </td>
       <td>{transaction.date}</td>
       <td>
