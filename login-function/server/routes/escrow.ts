@@ -12,6 +12,16 @@ import { getAllTransactions } from '../controllers/transaction.js';
 
 const router = express.Router();
 
+// @route   GET api/escrow/vnpay-ipn
+// @desc    VNPay IPN callback
+// @access  Public
+router.get('/vnpay-ipn', vnpayIpn);
+
+// @route   GET api/escrow/vnpay-return
+// @desc    VNPay return callback
+// @access  Public
+router.get('/vnpay-return', vnpayReturn);
+
 // @route   POST api/escrow/create
 // @desc    Create a new escrow transaction
 // @access  Private
@@ -36,15 +46,5 @@ router.get('/', auth, require2FA, getAllTransactions); // Admin lấy tất cả
 // @desc    Refund escrow to buyer
 // @access  Private
 router.post('/:orderId/refund', auth, refundEscrow);
-
-// @route   GET api/escrow/vnpay-ipn
-// @desc    VNPay IPN callback
-// @access  Public
-router.get('/vnpay-ipn', vnpayIpn);
-
-// @route   GET api/escrow/vnpay-return
-// @desc    VNPay return callback
-// @access  Public
-router.get('/vnpay-return', vnpayReturn);
 
 export default router;

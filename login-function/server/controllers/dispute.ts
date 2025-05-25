@@ -93,3 +93,30 @@ export const listAllDisputes = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Failed to fetch disputes' });
   }
 };
+
+// Update dispute status/result (admin or system)
+export const updateDispute = async (req: Request, res: Response) => {
+  try {
+    const { disputeId } = req.params;
+    const { status, decision, note } = req.body;
+    const update: any = {};
+    if (status) update.status = status;
+    if (decision) {
+      update.decision = {
+        by: 'admin',
+        action: decision,
+        note: note || '',
+        decidedAt: new Date()
+      };
+    }
+    const dispute = await Dispute.findByIdAndUpdate(disputeId, update, { new: true }).populate('escrowId');
+    if (!dispute) return res.status(404).json({ error: 'Dispute not found' });
+    res.json({ success: true, dispute });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to update dispute' });
+  }
+};
+export function getAllDisputes(req2: any, res2: any) {
+    throw new Error('Function not implemented.');
+}
+

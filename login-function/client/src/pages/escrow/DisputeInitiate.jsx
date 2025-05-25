@@ -19,12 +19,12 @@ const DisputeInitiate = () => {
     e.preventDefault();
     setLoading(true);
     try {
+      // Xóa trường adminId khỏi payload gửi lên API
       await axios.post(`${API_URL}/api/dispute/initiate`, {
         escrowId: orderId,
         reason,
         evidence: { message: evidenceMsg, files: evidenceFiles },
         sellerId: 'seller', // Replace with actual seller id logic
-        adminId: 'admin', // Replace with actual admin id logic
       });
       setAlert('Dispute initiated', 'success');
       navigate(`/escrow/${orderId}`);

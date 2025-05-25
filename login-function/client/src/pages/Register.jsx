@@ -1,29 +1,27 @@
-// client/src/pages/Register.js
+// client/src/pages/Register.jsx
 import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AuthContext from '../context/auth/authContext';
-import AlertContext from '../context/alert/alertContext';
 
 const Register = () => {
   const authContext = useContext(AuthContext);
-  const alertContext = useContext(AlertContext);
-
-  const { register, error, clearErrors, isAuthenticated, require2FA } = authContext;
-  const { setAlert } = alertContext;
-
+  const { error, clearErrors, isAuthenticated } = authContext;
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    // If already authenticated, redirect to home
     if (isAuthenticated) {
       navigate('/');
+      return;
     }
 
+    // Handle registration errors
     if (error) {
-      setAlert(error, 'danger');
+      alert('Registration error: ' + error);
       clearErrors();
     }
-    // eslint-disable-next-line
-  }, [error, isAuthenticated]);
+  }, [error, isAuthenticated, navigate, clearErrors]);
 
   const [user, setUser] = useState({
     name: '',
@@ -36,18 +34,56 @@ const Register = () => {
 
   const onChange = e => setUser({ ...user, [e.target.name]: e.target.value });
 
-  const onSubmit = e => {
+  const onSubmit = async (e) => {
     e.preventDefault();
+
+    // Validation
     if (name === '' || email === '' || password === '') {
-      setAlert('Please enter all fields', 'danger');
-    } else if (password !== password2) {
-      setAlert('Passwords do not match', 'danger');
-    } else {
-      register({
+      alert('Please enter all fields');
+      return;
+    }
+
+    if (password !== password2) {
+      alert('Passwords do not match');
+      return;
+    }
+
+    if (password.length < 6) {
+      alert('Password must be at least 6 characters');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const result = await authContext.register({
         name,
         email,
         password
       });
+
+      if (result && result.success) {
+        alert('Registration successful! Please login with your credentials.');
+
+        // Clear the form
+        setUser({
+          name: '',
+          email: '',
+          password: '',
+          password2: ''
+        });
+
+        // Redirect to login page immediately
+        navigate('/login');
+      } else if (result && result.error) {
+        alert('Registration failed: ' + result.error);
+      } else {
+        alert('Registration failed. Please try again.');
+      }
+    } catch (err) {
+      alert('Registration failed. Network error or server is down.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -63,6 +99,8 @@ const Register = () => {
             value={name}
             onChange={onChange}
             required
+            disabled={loading}
+            placeholder="Enter your full name"
           />
         </div>
         <div className='form-group'>
@@ -73,6 +111,8 @@ const Register = () => {
             value={email}
             onChange={onChange}
             required
+            disabled={loading}
+            placeholder="Enter your email"
           />
         </div>
         <div className='form-group'>
@@ -84,6 +124,8 @@ const Register = () => {
             onChange={onChange}
             required
             minLength='6'
+            disabled={loading}
+            placeholder="Minimum 6 characters"
           />
         </div>
         <div className='form-group'>
@@ -95,14 +137,21 @@ const Register = () => {
             onChange={onChange}
             required
             minLength='6'
+            disabled={loading}
+            placeholder="Confirm your password"
           />
         </div>
         <input
           type='submit'
-          value='Register'
+          value={loading ? 'Registering...' : 'Register'}
           className='btn btn-primary btn-block'
+          disabled={loading}
         />
       </form>
+
+      <p className="text-center mt-3">
+        Already have an account? <a href="/login">Login here</a>
+      </p>
     </div>
   );
 };
