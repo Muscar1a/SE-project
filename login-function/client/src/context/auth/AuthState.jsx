@@ -1,4 +1,4 @@
-// client/src/context/auth/AuthState.js
+// client/src/context/auth/AuthState.jsx
 import React, { useReducer, useEffect } from 'react';
 import axios from 'axios';
 import AuthContext from './authContext';
@@ -31,7 +31,8 @@ const AuthState = (props) => {
     error: null,
     require2FA: false,
     twoFactorSecret: null,
-    qrCodeUrl: null
+    qrCodeUrl: null,
+    registrationSuccess: false
   };
 
   const [state, dispatch] = useReducer(authReducer, initialState);
@@ -41,26 +42,20 @@ const AuthState = (props) => {
     const initAuth = async () => {
       const token = localStorage.getItem('token');
 
-      console.log('Initializing auth, token exists:', !!token);
-
       if (token) {
         setAuthToken(token);
         try {
           await loadUser();
         } catch (error) {
-          console.error('Failed to load user on init:', error);
-          // Only clear token if it's actually invalid (401)
           if (error.response && error.response.status === 401) {
             localStorage.removeItem('token');
             setAuthToken(null);
             dispatch({ type: AUTH_ERROR });
           } else {
-            // For network errors, etc., just stop loading
             dispatch({ type: AUTH_LOADING_COMPLETE });
           }
         }
       } else {
-        // No token, just finish loading
         dispatch({ type: AUTH_LOADING_COMPLETE });
       }
     };
@@ -79,29 +74,23 @@ const AuthState = (props) => {
     }
 
     try {
-      console.log('Loading user...');
       const res = await axios.get(`${API_URL}/api/auth`);
-      console.log('User loaded successfully:', res.data);
 
       dispatch({
         type: USER_LOADED,
         payload: res.data
       });
     } catch (err) {
-      console.error('Error loading user:', err.response?.data || err.message);
-
       if (err.response && err.response.status === 401) {
         const responseData = err.response.data;
         if (responseData.require2FA) {
           dispatch({ type: REQUIRE_2FA });
         } else {
-          // Token is invalid, clear it
           localStorage.removeItem('token');
           setAuthToken(null);
           dispatch({ type: AUTH_ERROR });
         }
       } else {
-        // Network error or other issue - don't clear token
         dispatch({ type: AUTH_LOADING_COMPLETE });
       }
     }
@@ -123,14 +112,16 @@ const AuthState = (props) => {
         payload: res.data
       });
 
-      // Load user after successful registration
-      await loadUser();
+      // Don't automatically load user or authenticate after registration
+      // Let the user go to login page instead
+      return { success: true };
     } catch (err) {
-      console.error('Registration error:', err.response?.data || err.message);
+      const errorMessage = err.response?.data?.msg || 'Registration failed';
       dispatch({
         type: REGISTER_FAIL,
-        payload: err.response?.data?.msg || 'Registration failed'
+        payload: errorMessage
       });
+      return { success: false, error: errorMessage };
     }
   };
 
@@ -144,29 +135,22 @@ const AuthState = (props) => {
 
     try {
       const res = await axios.post(`${API_URL}/api/auth/login`, formData, config);
-      console.log('Login response:', res.data);
 
       dispatch({
         type: LOGIN_SUCCESS,
         payload: res.data
       });
 
-      // IMPORTANT: If 2FA is not required, load user immediately
       if (!res.data.require2FA) {
-        console.log('No 2FA required, loading user...');
         setTimeout(async () => {
           try {
             await loadUser();
-            console.log('User loaded after login');
           } catch (error) {
-            console.error('Failed to load user after login:', error);
+            // Handle error silently
           }
-        }, 100); // Small delay to ensure state is updated
-      } else {
-        console.log('2FA required, not loading user yet');
+        }, 100);
       }
     } catch (err) {
-      console.error('Login error:', err.response?.data || err.message);
       dispatch({
         type: LOGIN_FAIL,
         payload: err.response?.data?.msg || 'Login failed'
@@ -194,10 +178,8 @@ const AuthState = (props) => {
         payload: res.data
       });
 
-      // Load user after successful 2FA verification
       await loadUser();
     } catch (err) {
-      console.error('2FA verification error:', err.response?.data || err.message);
       dispatch({
         type: LOGIN_FAIL,
         payload: err.response?.data?.msg || '2FA verification failed'
@@ -218,7 +200,6 @@ const AuthState = (props) => {
         }
       });
     } catch (err) {
-      console.error('Enable 2FA error:', err.response?.data || err.message);
       dispatch({
         type: AUTH_ERROR,
         payload: err.response?.data?.msg || 'Failed to enable 2FA'
@@ -246,10 +227,8 @@ const AuthState = (props) => {
         payload: res.data
       });
 
-      // Reload user to get updated 2FA status
       await loadUser();
     } catch (err) {
-      console.error('2FA setup verification error:', err.response?.data || err.message);
       dispatch({
         type: AUTH_ERROR,
         payload: err.response?.data?.msg || '2FA setup verification failed'
@@ -267,10 +246,8 @@ const AuthState = (props) => {
         payload: res.data
       });
 
-      // Reload user to get updated 2FA status
       await loadUser();
     } catch (err) {
-      console.error('Disable 2FA error:', err.response?.data || err.message);
       dispatch({
         type: AUTH_ERROR,
         payload: err.response?.data?.msg || 'Failed to disable 2FA'
@@ -280,7 +257,6 @@ const AuthState = (props) => {
 
   // Logout
   const logout = () => {
-    console.log('Logging out...');
     localStorage.removeItem('token');
     setAuthToken(null);
     dispatch({ type: LOGOUT });
@@ -300,6 +276,7 @@ const AuthState = (props) => {
         require2FA: state.require2FA,
         twoFactorSecret: state.twoFactorSecret,
         qrCodeUrl: state.qrCodeUrl,
+        registrationSuccess: state.registrationSuccess,
         register,
         loadUser,
         login,
