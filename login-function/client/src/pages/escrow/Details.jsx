@@ -1,6 +1,6 @@
 // client/src/pages/escrow/Details.jsx
 import React, { useContext, useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import EscrowContext from '../../context/escrow/escrowContext';
 import AuthContext from '../../context/auth/authContext';
 import AlertContext from '../../context/alert/alertContext';
@@ -52,6 +52,7 @@ const EscrowDetails = () => {
       case 'completed': return 'badge-success';
       case 'refunded': return 'badge-secondary';
       case 'cancelled': return 'badge-danger';
+      case 'dispute': return 'badge-danger';
       default: return 'badge-light';
     }
   };
@@ -150,6 +151,14 @@ const EscrowDetails = () => {
             <strong>Refunded At:</strong> {new Date(currentTransaction.refundedAt).toLocaleString()}
           </div>
         )}
+        {currentTransaction.status === 'dispute' && (
+          <div className="alert alert-warning">
+            This transaction is under dispute. 
+            <Link to={`/dispute/${currentTransaction.disputeId}`}>
+              View Dispute
+            </Link>
+          </div>
+        )}
 
         {/* Actions based on transaction status */}
         {currentTransaction.status === 'paid' && (
@@ -168,6 +177,12 @@ const EscrowDetails = () => {
               showRefundFormComp()
             )}
           </div>
+        )}
+        {/* Add button for buyer to initiate dispute if eligible */}
+        {user && user.role === 'buyer' && currentTransaction.status === 'paid' && (
+          <button className="btn btn-danger" onClick={() => navigate(`/escrow/${orderId}/dispute`)}>
+            Open Dispute
+          </button>
         )}
 
         {/* Back to transactions */}
