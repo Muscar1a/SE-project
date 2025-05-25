@@ -9,6 +9,7 @@ import authRoutes from './routes/auth.js';
 import escrowRoutes from './routes/escrow.js';
 import partnerRoutes from './routes/partner.js';
 import adminRoutes from './routes/admin.js';
+import disputeRoutes from './routes/dispute.js';
 
 // Get __dirname equivalent in ESM
 const __filename = fileURLToPath(import.meta.url);
@@ -30,6 +31,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/escrow', escrowRoutes);
 app.use('/api/partner', partnerRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/dispute', disputeRoutes);
 
 // Serve static assets for templates
 app.use('/templates', express.static(path.join(__dirname, 'templates')));

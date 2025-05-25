@@ -7,7 +7,7 @@ export interface IEscrowTransaction extends Document {
   sellerId: string;
   amount: number;
   description: string;
-  status: 'pending' | 'paid' | 'completed' | 'refunded' | 'cancelled';
+  status: 'pending' | 'paid' | 'completed' | 'refunded' | 'cancelled' | 'locked' | 'dispute';
   vnpayTransactionNo?: string;
   createdAt: Date;
   paidAt?: Date;
@@ -39,7 +39,7 @@ const EscrowTransactionSchema = new Schema<IEscrowTransaction>({
   },
   status: {
     type: String,
-    enum: ['pending', 'paid', 'completed', 'refunded', 'cancelled'],
+    enum: ['pending', 'paid', 'completed', 'refunded', 'cancelled', 'locked', 'dispute'],
     default: 'pending'
   },
   vnpayTransactionNo: {
