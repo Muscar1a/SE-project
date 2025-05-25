@@ -51,13 +51,13 @@ NotificationSchema.methods.sendNotification = async function (
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
+      user: process.env.MAIL_USER,
+      pass: process.env.MAIL_PASS,
     },
   });
 
   const mailOptions = {
-    from: `"Escrow System" <${process.env.EMAIL_USER}>`,
+    from: `"Escrow System" <${process.env.MAIL_USER}>`,
     to,
     subject,
     text,
