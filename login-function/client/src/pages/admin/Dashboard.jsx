@@ -24,10 +24,6 @@ const DashboardPage = () => {
     }
 
     try {
-      console.log(`${API_URL}/api/admin/partners`)
-      const res = await axios.get(`${API_URL}/api/admin/partners`);
-      console.log("Partners data:", res.data);
-
       const response = await axios.get(`${API_URL}/api/admin/dashboard`);
 
       const result = response.data;

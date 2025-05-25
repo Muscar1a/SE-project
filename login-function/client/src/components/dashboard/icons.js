@@ -1,0 +1,22 @@
+import React from 'react';
+
+export const IconWallet = () => <span role="img" aria-label="wallet">💳</span>;
+export const IconIncome = () => <span role="img" aria-label="income">📈</span>;
+export const IconExpenses = () => <span role="img" aria-label="expenses">📉</span>;
+export const IconSearch = () => <span role="img" aria-label="search">🔍</span>;
+export const IconDownload = () => <span role="img" aria-label="download">📥</span>;
+export const IconFilter = () => <span role="img" aria-label="filter">⚙️</span>;
+export const IconBank = () => <span role="img" aria-label="bank">🏦</span>;
+export const IconYoutube = () => <span role="img" aria-label="youtube">▶️</span>;
+export const IconInternet = () => <span role="img" aria-label="internet">🌐</span>;
+export const IconStarbucks = () => <span role="img" aria-label="starbucks">☕</span>;
+export const IconSalary = () => <span role="img" aria-label="salary">💼</span>;
+export const IconCrypto = () => <span role="img" aria-label="crypto">₿</span>;
+export const IconAmazon = () => <span role="img" aria-label="amazon">🛒</span>;
+export const IconSpotify = () => <span role="img" aria-label="spotify">🎵</span>;
+export const IconMoreVertical = () => <span role="img" aria-label="more">⋮</span>;
+export const IconChevronLeft = () => <span role="img" aria-label="previous">‹</span>;
+export const IconChevronRight = () => <span role="img" aria-label="next">›</span>;
+export const IconChevronsLeft = () => <span role="img" aria-label="first page">«</span>;
+export const IconChevronsRight = () => <span role="img" aria-label="last page">»</span>;
+export const IconSort = () => <span role="img" aria-label="sort" style={{opacity: 0.5, marginLeft: '4px'}}>↕</span>;
