@@ -22,6 +22,7 @@ import {
     getDateInGMT7,
 } from 'vnpay';
 import EscrowTransaction, { IEscrowTransaction } from '../models/EscrowTransaction.js';
+import Notification from '../models/Notification.js';
 
 // Get __dirname equivalent in ESM
 const __filename = fileURLToPath(import.meta.url);
@@ -83,6 +84,12 @@ export const createEscrow = async (req: Request<{}, {}, CreateEscrowRequest>, re
     });
 
     await escrowTransaction.save();
+
+    const buyerNotification = new Notification({
+      notification_id: `${uuidv4()}`,
+      user_id: buyerId,
+      message: `Escrow ${orderId} is pending`,
+    })
 
     // Create payment URL
     const paymentUrl = vnpay.buildPaymentUrl({
@@ -164,6 +171,22 @@ export const completeEscrow = async (req: Request<{orderId: string}>, res: Respo
     transaction.completedAt = new Date();
     await transaction.save();
 
+    const buyerNotification = new Notification({
+      notification_id: `${uuidv4()}`,
+      user_id: transaction.buyerId,
+      message: `Escrow ${transaction.orderId} is completed`,
+    })
+
+    await buyerNotification.save();
+
+    const sellerNotification = new Notification({
+      notification_id: `${uuidv4()}`,
+      user_id: transaction.sellerId,
+      message: `Escrow ${transaction.orderId} is completed`,
+    })
+
+    await sellerNotification.save();
+
     return res.json({
       success: true,
       message: 'Escrow completed, funds released to seller',
@@ -214,6 +237,22 @@ export const refundEscrow = async (req: Request<{orderId: string}, {}, RefundEsc
       transaction.refundedAt = new Date();
       await transaction.save();
 
+      const buyerNotification = new Notification({
+        notification_id: `${uuidv4()}`,
+        user_id: transaction.buyerId,
+        message: `Escrow ${transaction.orderId} is refunded`,
+      })
+
+      await buyerNotification.save();
+
+      const sellerNotification = new Notification({
+        notification_id: `${uuidv4()}`,
+        user_id: transaction.sellerId,
+        message: `Escrow ${transaction.orderId} is refunded`,
+      })
+
+    await sellerNotification.save();
+
       return res.json({
         success: true,
         message: 'Escrow refunded to buyer',
@@ -263,6 +302,22 @@ export const vnpayIpn = (req: Request, res: Response): any => {
         transaction.status = 'paid';
         transaction.paidAt = new Date();
         transaction.vnpayTransactionNo = String(verify.vnp_TransactionNo);
+
+        const buyerNotification = new Notification({
+              notification_id: `${uuidv4()}`,
+              user_id: transaction.buyerId,
+              message: `Escrow ${transaction.orderId} is paid`,
+        })
+
+        buyerNotification.save();
+
+        const sellerNotification = new Notification({
+              notification_id: `${uuidv4()}`,
+              user_id: transaction.sellerId,
+              message: `Escrow ${transaction.orderId} is paid`,
+        })
+
+        sellerNotification.save();
 
         return transaction.save().then(() => {
           console.log(`Escrow payment confirmed for order ${verify.vnp_TxnRef}`);

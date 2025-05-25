@@ -48,41 +48,49 @@ const EscrowList = () => {
   return (
     <div className="main-content">
       <div className="card">
-        <div className="card-header">
-          <h2>My Escrow Transactions</h2>
-          <Link to="/escrow/create" className="btn btn-primary">
-            New Transaction
-          </Link>
+        <h2>Escrow Transactions</h2>
+        <div className="mb-2 d-flex justify-content-between align-items-center">
+          <Link to="/escrow/create" className="btn btn-primary">+ New Escrow Transaction</Link>
+          <Link to="/escrow/disputes" className="btn btn-outline-primary">Dispute Center</Link>
         </div>
-
-        {transactions.length === 0 ? (
-          <div className="card-body text-center">
-            <p>No transactions found.</p>
-            <p>Create a new escrow transaction to securely pay for goods and services.</p>
-          </div>
-        ) : (
-          <div className="transaction-list">
-            {transactions.map(transaction => (
-              <div key={transaction.orderId} className="transaction-item">
-                <div className="transaction-header">
-                  <h3>Order #{transaction.orderId}</h3>
-                  <span className={`badge ${getStatusBadgeClass(transaction.status)}`}>
-                    {transaction.status.toUpperCase()}
-                  </span>
-                </div>
-                <div className="transaction-body">
-                  <p><strong>Amount:</strong> {transaction.amount.toLocaleString()} VND</p>
-                  <p><strong>Date:</strong> {new Date(transaction.createdAt).toLocaleDateString()}</p>
-                </div>
-                <div className="transaction-actions">
-                  <Link to={`/escrow/${transaction.orderId}`} className="btn btn-secondary">
-                    View Details
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+        <table className="table">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Amount</th>
+              <th>Date</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {transactions.length === 0 ? (
+              <tr>
+                <td colSpan="5" className="text-center">
+                  No transactions found.
+                </td>
+              </tr>
+            ) : (
+              transactions.map(transaction => (
+                <tr key={transaction.orderId}>
+                  <td>{transaction.orderId}</td>
+                  <td>{transaction.amount.toLocaleString()} VND</td>
+                  <td>{new Date(transaction.createdAt).toLocaleDateString()}</td>
+                  <td>
+                    <span className={`badge ${getStatusBadgeClass(transaction.status)}`}>
+                      {transaction.status.toUpperCase()}
+                    </span>
+                  </td>
+                  <td>
+                    <Link to={`/escrow/${transaction.orderId}`} className="btn btn-secondary btn-sm">
+                      View Details
+                    </Link>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
       </div>
     </div>
   );

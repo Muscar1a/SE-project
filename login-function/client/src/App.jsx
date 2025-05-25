@@ -19,6 +19,9 @@ import PrivateRoute from './components/routing/PrivateRoute';
 import EscrowCreate from './pages/escrow/Create';
 import EscrowDetails from './pages/escrow/Details';
 import EscrowList from './pages/escrow/List';
+import DisputeCenter from './pages/escrow/DisputeCenter';
+import DisputeDetails from './pages/escrow/DisputeDetails';
+import DisputeInitiate from './pages/escrow/DisputeInitiate';
 
 // Admin Pages
 import AdminPartners from './pages/admin/Partners';
@@ -81,6 +84,30 @@ const App = () => {
                     element={
                       <PrivateRoute>
                         <EscrowDetails />
+                      </PrivateRoute>
+                    }
+                  />
+                  <Route
+                    path="/escrow/disputes"
+                    element={
+                      <PrivateRoute>
+                        <DisputeCenter />
+                      </PrivateRoute>
+                    }
+                  />
+                  <Route
+                    path="/dispute/:disputeId"
+                    element={
+                      <PrivateRoute>
+                        <DisputeDetails />
+                      </PrivateRoute>
+                    }
+                  />
+                  <Route
+                    path="/escrow/:orderId/dispute"
+                    element={
+                      <PrivateRoute>
+                        <DisputeInitiate />
                       </PrivateRoute>
                     }
                   />
