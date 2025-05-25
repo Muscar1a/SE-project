@@ -54,7 +54,7 @@ router.delete('/partners/:partnerId', auth, deletePartner);
 // @route   GET api/admin/dashboard/stats
 // @desc    Get dashboard statistics
 // @access  Private (Admin - hiện tại được bảo vệ bởi auth & 2FA)
-router.get('/dashboard/stats', auth, require2FA, getDashboardStats);
+router.get('/dashboard', auth, require2FA, getDashboardStats);
 
 // Ví dụ cho alerts và dispute queue (nếu bạn triển khai riêng)
 // router.get('/dashboard/alerts', auth, require2FA, getDashboardAlerts);
