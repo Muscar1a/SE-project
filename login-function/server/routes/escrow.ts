@@ -11,6 +11,16 @@ import {
 
 const router = express.Router();
 
+// @route   GET api/escrow/vnpay-ipn
+// @desc    VNPay IPN callback
+// @access  Public
+router.get('/vnpay-ipn', vnpayIpn);
+
+// @route   GET api/escrow/vnpay-return
+// @desc    VNPay return callback
+// @access  Public
+router.get('/vnpay-return', vnpayReturn);
+
 // @route   POST api/escrow/create
 // @desc    Create a new escrow transaction
 // @access  Private
@@ -30,15 +40,5 @@ router.post('/:orderId/complete', auth, completeEscrow);
 // @desc    Refund escrow to buyer
 // @access  Private
 router.post('/:orderId/refund', auth, refundEscrow);
-
-// @route   GET api/escrow/vnpay-ipn
-// @desc    VNPay IPN callback
-// @access  Public
-router.get('/vnpay-ipn', vnpayIpn);
-
-// @route   GET api/escrow/vnpay-return
-// @desc    VNPay return callback
-// @access  Public
-router.get('/vnpay-return', vnpayReturn);
 
 export default router;
