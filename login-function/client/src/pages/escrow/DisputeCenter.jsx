@@ -14,9 +14,9 @@ const DisputeCenter = () => {
     const fetchDisputes = async () => {
       try {
         setLoading(true);
-        // You may want to filter by user role (buyer/seller/admin)
-        const res = await axios.get(`${API_URL}/api/dispute/user/${user._id}`);
-        setDisputes(res.data);
+        // Luôn gọi API lấy toàn bộ dispute, không kiểm tra role admin nữa
+        const res = await axios.get(`${API_URL}/api/dispute/all`);
+        setDisputes(res.data.disputes || []);
       } catch (err) {
         setAlert('Error fetching disputes', 'danger');
       } finally {
@@ -32,12 +32,16 @@ const DisputeCenter = () => {
     <div className="main-content">
       <div className="card">
         <h2>Dispute Center</h2>
-        <table className="table">
-          <thead>
+        <table className="table table-striped table-bordered">
+          <thead className="thead-dark">
             <tr>
               <th>Dispute ID</th>
-              <th>Escrow</th>
-              <th>Status</th>
+              <th>Order ID</th>
+              <th>Seller</th>
+              <th>Buyer</th>
+              <th>Amount</th>
+              <th>Escrow Status</th>
+              <th>Dispute Status</th>
               <th>Reason</th>
               <th>Action</th>
             </tr>
@@ -46,7 +50,11 @@ const DisputeCenter = () => {
             {disputes.map(d => (
               <tr key={d._id}>
                 <td>{d._id}</td>
-                <td>{d.escrowId}</td>
+                <td>{d.escrowId?.orderId || d.escrowId?._id || d.escrowId}</td>
+                <td>{d.escrowId?.sellerId}</td>
+                <td>{d.escrowId?.buyerId}</td>
+                <td>{d.escrowId?.amount?.toLocaleString()} VND</td>
+                <td>{d.escrowId?.status}</td>
                 <td><span className={`badge badge-${d.status === 'resolved' ? 'success' : d.status === 'responded' ? 'info' : 'warning'}`}>{d.status}</span></td>
                 <td>{d.reason}</td>
                 <td><a href={`/dispute/${d._id}`}>View</a></td>

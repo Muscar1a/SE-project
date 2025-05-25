@@ -91,6 +91,8 @@ export const createEscrow = async (req: Request<{}, {}, CreateEscrowRequest>, re
       message: `Escrow ${orderId} is pending`,
     })
 
+    await buyerNotification.save();
+
     // Create payment URL
     const paymentUrl = vnpay.buildPaymentUrl({
       vnp_Amount: amount,

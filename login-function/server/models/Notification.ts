@@ -1,5 +1,8 @@
 import mongoose, { Document, Schema } from 'mongoose';
 import nodemailer from "nodemailer";
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 export interface INotification extends Document {
   notification_id: string;
@@ -7,8 +10,8 @@ export interface INotification extends Document {
   message: string;
   createdDate: Date;
   readStatus: boolean;
-  markAsRead(): void;
-  sendNotification(): void;
+  markAsRead(): Promise<INotification>;
+  sendNotification(to: string, subject: string, text: string): Promise<void>;
 }
 
 const NotificationSchema = new Schema<INotification>({
@@ -40,17 +43,21 @@ NotificationSchema.methods.markAsRead = function () {
   return this.save();
 };
 
-NotificationSchema.methods.sendNotification = async (to: string, subject: string, text: string) => {
+NotificationSchema.methods.sendNotification = async function (
+  to: string,
+  subject: string,
+  text: string
+): Promise<void> {
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
+      user: process.env.MAIL_USER,
+      pass: process.env.MAIL_PASS,
     },
   });
 
   const mailOptions = {
-    from: `"Escrow System" <${process.env.EMAIL_USER}>`,
+    from: `"Escrow System" <${process.env.MAIL_USER}>`,
     to,
     subject,
     text,

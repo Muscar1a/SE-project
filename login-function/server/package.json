@@ -23,6 +23,7 @@
     "jsonwebtoken": "^9.0.2",
     "mern-auth-2fa-server": "file:",
     "mongoose": "^7.5.0",
+    "nodemailer": "^7.0.3",
     "otplib": "^12.0.1",
     "qrcode": "^1.5.3",
     "swagger-jsdoc": "^6.2.8",

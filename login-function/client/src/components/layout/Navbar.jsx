@@ -23,7 +23,7 @@ const Navbar = () => {
       <li>
         <Link to='/escrow'>Escrow</Link>
       </li>
-      {/* Admin Links - In production, you'd check for admin role */}
+      {/* Admin Links - Đã loại bỏ kiểm tra role admin, hiển thị cho mọi user đăng nhập */}
       <li className="dropdown">
         <Link to="#" className="dropdown-toggle">Admin</Link>
         <div className="dropdown-menu">
