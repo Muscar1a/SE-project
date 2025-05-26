@@ -90,7 +90,7 @@ const Register = () => {
   return (
     <div className='form-container'>
       <h1>Account Register</h1>
-      <form onSubmit={onSubmit}>
+      <form onSubmit={onSubmit} className="form"> 
         <div className='form-group'>
           <label htmlFor='name'>Name</label>
           <input
