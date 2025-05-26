@@ -668,3 +668,97 @@ code {
 .btn-success:hover {
   background-color: #2f855a;
 }
+
+
+.notification-icon {
+  position: relative; /* Keeps the bell icon and dropdown positioned correctly */
+}
+
+.bell-btn {
+  background: none;
+  border: none;
+  position: relative;
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.badge {
+  position: absolute;
+  top: -6px;
+  right: -10px;
+  background-color: red;
+  color: white;
+  font-size: 0.7rem;
+  padding: 2px 6px;
+  border-radius: 999px;
+}
+
+.notification-dropdown {
+  position: absolute;
+  top: 40px; /* Move dropdown below navbar */
+  right: 0; /* Align to right edge of bell icon */
+  transform: translateX(50%); /* Shift it to right outside navbar */
+  background: white;
+  border: 1px solid #ccc;
+  min-width: 250px;
+  z-index: 9999;
+  border-radius: 6px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  padding: 0.5rem;
+}
+
+.notification-item {
+  padding: 0.5rem;
+  font-size: 0.9rem;
+  border-bottom: 1px solid #eee;
+}
+
+.notification-item:last-child {
+  border-bottom: none;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between; /* space between logo and nav items */
+  align-items: center; /* vertical centering */
+  padding: 0 1.5rem;
+  height: 60px;
+  background-color: #f8f9fa; /* or your desired color */
+  border-bottom: 1px solid #ddd;
+}
+
+.navbar h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.navbar h1 i {
+  margin-right: 0.5rem;
+}
+
+.navbar ul {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  gap: 1.5rem; /* spacing between nav items */
+  margin: 0;
+  padding: 0;
+}
+
+.navbar li {
+  display: flex;
+  align-items: center;
+}
+
+.navbar a {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+}
+
+.navbar a:hover {
+  color: #007bff;
+}

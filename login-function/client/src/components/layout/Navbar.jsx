@@ -1,11 +1,19 @@
 // client/src/components/layout/Navbar.js
-import React, { useContext, Fragment } from 'react';
+import React, { useContext, Fragment, useState } from 'react';
 import { Link } from 'react-router-dom';
 import AuthContext from '../../context/auth/authContext';
 
 const Navbar = () => {
   const authContext = useContext(AuthContext);
   const { isAuthenticated, logout, user } = authContext;
+
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [notifications] = useState([
+    { id: 1, message: "New dispute created." },
+    { id: 2, message: "Escrow payment received." }
+  ]); 
+
+  const toggleNotifications = () => setShowNotifications(!showNotifications);
 
   const onLogout = () => {
     logout();
@@ -14,6 +22,27 @@ const Navbar = () => {
   const authLinks = (
     <Fragment>
       <li>Hello {user && (user.name || user.username)}</li>
+      <li className="notification-icon">
+        <button className="bell-btn" onClick={toggleNotifications}>
+          <i className="fas fa-bell"></i>
+          {notifications.length > 0 && (
+            <span className="badge">{notifications.length}</span>
+          )}
+        </button>
+        {showNotifications && (
+          <div className="notification-dropdown">
+            {notifications.length > 0 ? (
+              notifications.map((n) => (
+                <div key={n.id} className="notification-item">
+                  {n.message}
+                </div>
+              ))
+            ) : (
+              <div className="notification-item">No notifications</div>
+            )}
+          </div>
+        )}
+      </li>
       <li>
         <Link to='/profile'>Profile</Link>
       </li>
