@@ -11,6 +11,9 @@ export interface INotification extends Document {
   createdDate: Date;
   readStatus: boolean;
   markAsRead(): Promise<INotification>;
+}
+
+export interface NotificationModel extends mongoose.Model<INotification> {
   sendNotification(to: string, subject: string, text: string): Promise<void>;
 }
 
@@ -43,7 +46,7 @@ NotificationSchema.methods.markAsRead = function () {
   return this.save();
 };
 
-NotificationSchema.methods.sendNotification = async function (
+NotificationSchema.statics.sendNotification = async function (
   to: string,
   subject: string,
   text: string
@@ -71,4 +74,4 @@ NotificationSchema.methods.sendNotification = async function (
   }
 };
 
-export default mongoose.model<INotification>('Notification', NotificationSchema);
+export default mongoose.model<INotification, NotificationModel>('Notification', NotificationSchema);
