@@ -1,5 +1,5 @@
 import express from 'express';
-import auth from '../middleware/auth.js';
+import auth, { require2FA } from '../middleware/auth.js';
 import {
   createEscrow,
   getTransaction,
@@ -8,6 +8,7 @@ import {
   vnpayIpn,
   vnpayReturn
 } from '../controllers/escrow.js';
+import { getAllTransactions } from '../controllers/transaction.js';
 
 const router = express.Router();
 
@@ -35,6 +36,11 @@ router.get('/:orderId', auth, getTransaction);
 // @desc    Complete escrow and release funds to seller
 // @access  Private
 router.post('/:orderId/complete', auth, completeEscrow);
+
+// @route   get api/escrow/
+// @desc    get all transactions
+// @access  require2FA
+router.get('/', auth, require2FA, getAllTransactions); // Admin lấy tất cả giao dịch
 
 // @route   POST api/escrow/:orderId/refund
 // @desc    Refund escrow to buyer

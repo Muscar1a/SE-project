@@ -26,7 +26,7 @@ import DisputeInitiate from './pages/escrow/DisputeInitiate';
 // Admin Pages
 import AdminPartners from './pages/admin/Partners';
 import ApiDocumentation from './pages/admin/ApiDocumentation';
-import DashboardPage from './pages/admin/Dashboard';
+import DashboardPage from './pages/admin/DashboardPage';
 
 // Context
 import AuthState from './context/auth/AuthState';

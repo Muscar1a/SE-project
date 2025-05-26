@@ -60,26 +60,6 @@ router.get('/dashboard', auth, require2FA, getDashboardStats);
 // router.get('/dashboard/alerts', auth, require2FA, getDashboardAlerts);
 // router.get('/dashboard/dispute-queue', auth, require2FA, getDisputeQueue);
 
-// --- II. Transactions Management ---
-// @route   GET api/admin/transactions
-// @desc    Get all transactions (with filtering, pagination)
-// @access  Private (Admin - hiện tại được bảo vệ bởi auth & 2FA)
-router.get('/transactions', auth, require2FA, getAllTransactions);
-
-// @route   GET api/admin/transactions/:transactionId
-// @desc    Get transaction details
-// @access  Private (Admin - hiện tại được bảo vệ bởi auth & 2FA)
-// router.get('/transactions/:transactionId', auth, require2FA, getTransactionDetails);
-
-// @route   POST api/admin/transactions/:transactionId/force-release
-// @desc    Manually force release funds for a transaction
-// @access  Private (Admin - hiện tại được bảo vệ bởi auth & 2FA)
-// router.post('/transactions/:transactionId/force-release', auth, require2FA, forceReleaseTransaction);
-
-// @route   POST api/admin/transactions/:transactionId/force-refund
-// @desc    Manually force refund for a transaction
-// @access  Private (Admin - hiện tại được bảo vệ bởi auth & 2FA)
-// router.post('/transactions/:transactionId/force-refund', auth, require2FA, forceRefundTransaction);
 
 // --- III. User Accounts Management (Nếu bạn quyết định giữ lại phần này) ---
 // Nếu bạn không cần quản lý user cuối, có thể bỏ các route này
