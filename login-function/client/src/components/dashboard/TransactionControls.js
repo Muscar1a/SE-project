@@ -1,5 +1,6 @@
 import React from 'react';
 import { IconSearch, IconDownload, IconFilter } from './icons';
+import '../../pages/admin/DashboardPage.css'; // Assuming you have a CSS file for styles
 
 const TransactionControls = ({ 
     searchTerm, 
@@ -27,8 +28,11 @@ const TransactionControls = ({
       >
         <option value="All Status">All Status</option>
         <option value="Completed">Completed</option>
+        <option value="Paid">Paid</option>
         <option value="Failed">Failed</option>
-        <option value="Pending">Pending</option> {/* Assuming Pending might be a status */}
+        <option value="Pending">Pending</option>
+        <option value="Refunded">Refunded</option>
+        <option value="Cancelled">Cancelled</option>
       </select>
       <select
         className="filter-dropdown"
@@ -40,8 +44,8 @@ const TransactionControls = ({
         <option value="Amount (High-Low)">Amount (High-Low)</option>
         <option value="Amount (Low-High)">Amount (Low-High)</option>
       </select>
-      <button className="action-button primary icon-only"><IconDownload /></button>
-      <button className="action-button icon-only"><IconFilter /></button>
+      {/* <button className="action-button primary icon-only"><IconDownload /></button>
+      <button className="action-button icon-only"><IconFilter /></button> */}
     </div>
   );
 };

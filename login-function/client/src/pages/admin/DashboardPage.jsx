@@ -2,17 +2,18 @@ import React, { useState, useMemo, useEffect } from 'react';
 import TransactionTable from '../../components/dashboard/TransactionTable';
 import TransactionControls from '../../components/dashboard/TransactionControls';
 import Pagination from '../../components/dashboard/Pagination';
-
+import './DashboardPage.css'; // Assuming you have a CSS file for styles
 import axios from 'axios';
 import { API_URL } from '../../config';
 
 
-const StatCard = ({ title, value, color = 'bg-indigo-500' }) => (
-  <div className={`${color} text-white p-6 rounded-lg shadow`}>
-    <h3 className="text-lg font-medium">{title}</h3>
-    <p className="text-3xl font-bold">{value}</p>
+const StatCard = ({ title, value, color = 'indigo' }) => (
+  <div className={`stat-card ${color}`}>
+    <h3 className="stat-title">{title}</h3>
+    <p className="stat-value">{value}</p>
   </div>
 );
+
 
 const DashboardPage = () => {
   // const [allTransactions, setAllTransactions] = useState([]);
@@ -227,21 +228,21 @@ const DashboardPage = () => {
         <h1 className="main-title">Transactions</h1>
 
         {stats && !errorStats && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
+          <div className="stats-grid">
             <StatCard title="Total Escrows" value={stats.transactions?.total || 0} />
-            <StatCard title="Pending" value={stats.transactions?.pending || 0} color="bg-yellow-500" />
-            <StatCard title="Paid" value={stats.transactions?.paid || 0} color="bg-blue-500" />
-            <StatCard title="Completed" value={stats.transactions?.completed || 0} color="bg-green-500" />
-            <StatCard title="Refunded" value={stats.transactions?.refunded || 0} color="bg-red-500" />
-            <StatCard title="Cancelled" value={stats.transactions?.cancelled || 0} color="bg-gray-500" />
-          </div>
-        )}
-        {errorStats && (
-          <div className="mb-6 p-4 bg-red-100 text-red-700 rounded-md">
-            Could not load dashboard statistics: {errorStats}
+            <StatCard title="Pending" value={stats.transactions?.pending || 0} color="yellow" />
+            <StatCard title="Paid" value={stats.transactions?.paid || 0} color="blue" />
+            <StatCard title="Completed" value={stats.transactions?.completed || 0} color="green" />
+            <StatCard title="Refunded" value={stats.transactions?.refunded || 0} color="red" />
+            <StatCard title="Cancelled" value={stats.transactions?.cancelled || 0} color="gray" />
           </div>
         )}
 
+        {errorStats && (
+          <div className="error-message">
+            Could not load dashboard statistics: {errorStats}
+          </div>
+        )}
         <div className="transactions-section">
           <div className="transactions-header">
             <h2 className="transactions-title">Transactions</h2>
@@ -269,7 +270,7 @@ const DashboardPage = () => {
                 onSelectTransaction={handleSelectTransaction}
                 currentSortBy={sortBy}
                 currentSortOrder={sortOrder}
-                // Đảm bảo TransactionTable sử dụng 'displayAmount' để hiển thị số tiền
+              // Đảm bảo TransactionTable sử dụng 'displayAmount' để hiển thị số tiền
               />
 
               {transactionsForCurrentPage.length > 0 && totalPages > 0 && (
@@ -282,9 +283,9 @@ const DashboardPage = () => {
                 />
               )}
               {transactionsForCurrentPage.length === 0 && !loadingTransactions && (
-                 <p className="text-center text-gray-500 py-4">
-                    {totalTransactions > 0 ? "No transactions match your current filters." : "No transactions found."}
-                 </p>
+                <p className="text-center text-gray-500 py-4">
+                  {totalTransactions > 0 ? "No transactions match your current filters." : "No transactions found."}
+                </p>
               )}
             </>
           )}

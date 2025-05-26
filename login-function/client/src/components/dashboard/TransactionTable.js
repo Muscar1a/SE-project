@@ -1,6 +1,7 @@
 import React from 'react';
 import TransactionTableHeader from './TransactionTableHeader';
 import TransactionRow from './TransactionRow';
+import './style.css';
 
 const TransactionTable = ({ 
     transactions, 

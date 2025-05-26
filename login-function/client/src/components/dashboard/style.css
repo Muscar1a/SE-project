@@ -365,3 +365,233 @@ body {
     margin-top: 10px;
   }
 }
+
+/* Container của toàn bộ bảng */
+.transactions-table-container {
+  background-color: #ffffff; /* Nền trắng cho toàn bộ container */
+  border-radius: 8px; /* Bo góc container */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06); /* Đổ bóng nhẹ */
+  overflow-x: auto; /* Cho phép cuộn ngang nếu bảng quá rộng */
+  margin-top: 20px; /* Khoảng cách với phần tử phía trên */
+}
+
+/* Bảng giao dịch chính */
+.transactions-table {
+  width: 100%; /* Chiếm toàn bộ chiều rộng của container */
+  border-collapse: collapse; /* Gộp các đường viền của ô */
+  font-size: 0.9375rem; /* Tương đương 15px, điều chỉnh nếu cần */
+  color: #374151; /* Màu chữ mặc định cho bảng */
+}
+
+/* Header của bảng (thẻ thead) */
+.transactions-table thead {
+  background-color: #f9fafb; /* Nền xám nhạt cho header */
+}
+
+.transactions-table th {
+  padding: 12px 16px; /* Padding cho các ô tiêu đề */
+  text-align: left; /* Căn trái nội dung */
+  font-weight: 500; /* Độ đậm của chữ (semi-bold) */
+  color: #6b7280; /* Màu chữ của tiêu đề */
+  border-bottom: 1px solid #e5e7eb; /* Đường kẻ dưới mỗi tiêu đề */
+  position: relative; /* Để định vị icon sắp xếp nếu có */
+}
+
+.transactions-table th:first-child {
+  border-top-left-radius: 8px; /* Bo góc trái trên cho ô đầu tiên của header */
+}
+
+.transactions-table th:last-child {
+  border-top-right-radius: 8px; /* Bo góc phải trên cho ô cuối cùng của header */
+}
+
+/* Icon sắp xếp và mũi tên trong header (giả định có IconSort, IconArrowUp, IconArrowDown) */
+.transactions-table th .sort-indicator {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 5px; /* Khoảng cách giữa chữ và icon */
+  cursor: pointer;
+}
+
+.transactions-table th .sort-indicator svg {
+  width: 16px; /* Kích thước icon sắp xếp */
+  height: 16px;
+  color: #9ca3af; /* Màu icon mặc định */
+}
+
+.transactions-table th .sort-indicator.active svg {
+  color: #3b82f6; /* Màu xanh khi đang sắp xếp */
+}
+
+/* Body của bảng (thẻ tbody) */
+.transactions-table tbody tr {
+  border-bottom: 1px solid #f3f4f6; /* Đường kẻ nhẹ giữa các hàng */
+}
+
+.transactions-table tbody tr:last-child {
+  border-bottom: none; /* Bỏ đường kẻ dưới hàng cuối cùng */
+}
+
+.transactions-table tbody tr:hover {
+  background-color: #f9fafb; /* Nền xám nhạt khi hover vào hàng */
+}
+
+/* Các ô dữ liệu trong bảng */
+.transactions-table td {
+  padding: 12px 16px; /* Padding cho các ô dữ liệu */
+  vertical-align: middle; /* Căn giữa theo chiều dọc */
+  color: #4b5563; /* Màu chữ mặc định cho dữ liệu */
+}
+
+/* Ô checkbox */
+.transactions-table td:first-child {
+  width: 1%; /* Chiều rộng nhỏ cho checkbox */
+  white-space: nowrap; /* Ngăn không cho nội dung xuống dòng */
+}
+
+.transactions-table input[type="checkbox"] {
+  width: 18px; /* Kích thước checkbox */
+  height: 18px;
+  border-radius: 4px; /* Bo góc nhẹ cho checkbox */
+  border: 1px solid #d1d5db; /* Viền xám */
+  background-color: #ffffff; /* Nền trắng */
+  cursor: pointer;
+  -webkit-appearance: none; /* Bỏ style mặc định của trình duyệt */
+  -moz-appearance: none;
+  appearance: none;
+  display: inline-block;
+  vertical-align: middle; /* Căn giữa với text nếu có */
+  position: relative; /* Để tạo icon check tùy chỉnh */
+}
+
+.transactions-table input[type="checkbox"]:checked {
+  background-color: #3b82f6; /* Nền xanh khi được chọn */
+  border-color: #3b82f6;
+}
+
+.transactions-table input[type="checkbox"]:checked::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 5px; /* Kích thước dấu tick */
+  height: 10px;
+  border: solid #ffffff;
+  border-width: 0 2px 2px 0;
+  transform: translate(-50%, -50%) rotate(45deg); /* Xoay để tạo dấu tick */
+}
+
+
+/* Ô Payment Name (icon + text) */
+.transactions-table .payment-name-cell {
+  display: flex;
+  align-items: center;
+}
+
+.transactions-table .payment-name-cell .icon-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 32px; /* Kích thước hình tròn */
+  height: 32px;
+  border-radius: 50%; /* Hình tròn */
+  margin-right: 12px; /* Khoảng cách với text */
+  font-size: 1rem; /* Kích thước icon nếu là chữ cái */
+  color: #ffffff; /* Màu chữ/icon bên trong */
+  /* Màu nền của icon sẽ được đặt riêng cho từng loại giao dịch */
+}
+
+/* Các màu nền cho icon theo loại giao dịch */
+.transactions-table .icon-bank { background-color: #fce7f3; } /* Màu hồng nhạt */
+.transactions-table .icon-bank svg { color: #db2777; } /* Màu hồng đậm hơn */
+
+.transactions-table .icon-youtube { background-color: #fee2e2; } /* Màu đỏ nhạt */
+.transactions-table .icon-youtube svg { color: #ef4444; } /* Màu đỏ đậm hơn */
+
+.transactions-table .icon-internet { background-color: #e0f2fe; } /* Màu xanh nhạt */
+.transactions-table .icon-internet svg { color: #3b82f6; } /* Màu xanh đậm hơn */
+
+.transactions-table .icon-starbucks { background-color: #d1fae5; } /* Màu xanh lá nhạt */
+.transactions-table .icon-starbucks svg { color: #10b981; } /* Màu xanh lá đậm hơn */
+
+.transactions-table .icon-salary { background-color: #eef2ff; } /* Màu tím nhạt */
+.transactions-table .icon-salary svg { color: #6366f1; } /* Màu tím đậm hơn */
+
+.transactions-table .icon-crypto { background-color: #fffbeb; } /* Màu vàng nhạt */
+.transactions-table .icon-crypto svg { color: #f59e0b; } /* Màu vàng đậm hơn */
+
+.transactions-table .icon-amazon { background-color: #ffe4e6; } /* Màu đỏ-hồng nhạt */
+.transactions-table .icon-amazon svg { color: #fb7185; } /* Màu đỏ-hồng đậm hơn */
+
+.transactions-table .icon-spotify { background-color: #e0f2fe; } /* Màu xanh nhạt */
+.transactions-table .icon-spotify svg { color: #06b6d4; } /* Màu xanh đậm hơn */
+
+
+/* Giá trị Amount */
+.transactions-table .amount-positive {
+  color: #10b981; /* Màu xanh lá cho số tiền dương */
+  font-weight: 500;
+}
+
+.transactions-table .amount-negative {
+  color: #ef4444; /* Màu đỏ cho số tiền âm */
+  font-weight: 500;
+}
+
+/* Ô Status */
+.transactions-table .status-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 9999px; /* Để tạo hình viên thuốc */
+  font-size: 0.8rem; /* Kích thước chữ nhỏ hơn */
+  font-weight: 500;
+  text-transform: capitalize; /* Viết hoa chữ cái đầu */
+}
+
+.transactions-table .status-completed {
+  background-color: #d1fae5; /* Nền xanh lá nhạt */
+  color: #065f46; /* Chữ xanh lá đậm */
+}
+
+.transactions-table .status-failed {
+  background-color: #fee2e2; /* Nền đỏ nhạt */
+  color: #991b1b; /* Chữ đỏ đậm */
+}
+
+.transactions-table .status-pending {
+  background-color: #fffbeb; /* Nền vàng nhạt */
+  color: #92400e; /* Chữ vàng đậm */
+}
+
+/* Nút "..." (More Options) */
+.transactions-table .more-options-button {
+  background: none;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+  color: #9ca3af; /* Màu xám cho icon */
+  border-radius: 50%; /* Bo tròn nút */
+  width: 32px; /* Kích thước nút */
+  height: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 0.2s ease;
+}
+
+.transactions-table .more-options-button:hover {
+  background-color: #e5e7eb; /* Nền xám nhạt khi hover */
+}
+
+.transactions-table .more-options-button svg {
+  width: 20px; /* Kích thước icon ellipsis */
+  height: 20px;
+}
+
+/* Khi không có giao dịch */
+.transactions-table .no-transactions {
+  text-align: center;
+  padding: 20px;
+  color: #6b7280;
+  font-style: italic;
+}

@@ -1,0 +1,288 @@
+.stat-card {
+  color: white;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.stat-title {
+  font-size: 1.125rem; /* text-lg */
+  font-weight: 500;    /* font-medium */
+}
+
+.stat-value {
+  font-size: 1.875rem; /* text-3xl */
+  font-weight: 700;    /* font-bold */
+}
+
+/* Color classes */
+.indigo {
+  background-color: #6366f1; /* indigo-500 */
+}
+
+.red {
+  background-color: #ef4444; /* red-500 */
+}
+
+.green {
+  background-color: #10b981; /* green-500 */
+}
+
+.blue {
+  background-color: #3b82f6; /* blue-500 */
+}
+
+.yellow {
+  background-color: #f59e0b; /* yellow-500 */
+}
+
+.gray {
+  background-color: #6b7280; /* gray-500 */
+}
+
+/* Grid layout for stats */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1280px) {
+  .stats-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+/* Error message styling */
+.error-message {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background-color: #fee2e2; /* red-100 */
+  color: #b91c1c;            /* red-700 */
+  border-radius: 0.375rem;
+}
+
+
+/* Pagination Styles */
+.pagination-container {
+  display: flex;
+  justify-content: space-between; /* To push "Show data" to left and controls to right */
+  align-items: center;
+  padding-top: 20px; /* Adjust as needed */
+  font-size: 14px;
+  color: #4b5563; /* Similar to the grey in the image */
+  background-color: #ffffff; /* Assuming a white background for the container */
+  /* Add padding-bottom if there's space below */
+  padding-bottom: 20px;
+}
+
+.pagination-info {
+  /* Styles for "Show data X of Y" */
+  display: flex; /* To align "10" and "of 200" horizontally */
+  align-items: center;
+}
+
+.pagination-info span {
+  /* Default text color for "Show data" and "of 200" */
+  color: #4b5563;
+}
+
+.pagination-info strong {
+  /* Styles for the number "10" (assuming it's a strong or similar element) */
+  font-weight: normal; /* To remove bold if it's strong by default */
+  padding: 4px 8px; /* Slight padding to give it a "box" feel */
+  border: 1px solid #e5e7eb; /* Light gray border */
+  border-radius: 4px; /* Slightly rounded corners */
+  margin: 0 8px; /* Space between "Show data", "10", and "of 200" */
+  background-color: #f9fafb; /* Very light gray background for the number box */
+  color: #1f2937; /* Darker text for the number itself */
+}
+
+
+.pagination-controls {
+  display: flex; /* To arrange buttons in a row */
+  align-items: center;
+  gap: 8px; /* Space between pagination buttons */
+}
+
+.pagination-controls button {
+  /* Styles for pagination buttons */
+  background-color: #ffffff; /* White background for inactive buttons */
+  border: 1px solid #d1d5db; /* Light gray border for inactive buttons */
+  border-radius: 50%; /* Makes the buttons circular */
+  width: 32px; /* Fixed width for circular buttons */
+  height: 32px; /* Fixed height for circular buttons */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px; /* Adjust font size if needed */
+  color: #4b5563; /* Text color for inactive buttons */
+  cursor: pointer;
+  transition: all 0.2s ease-in-out; /* Smooth transition for hover/active states */
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* Subtle shadow for buttons */
+}
+
+.pagination-controls button:hover:not(.active) {
+  background-color: #f9fafb; /* Light hover effect for inactive buttons */
+  border-color: #cbd5e1;
+}
+
+.pagination-controls button.active {
+  background-color: #3b82f6; /* Blue for active page */
+  color: white;
+  border-color: #3b82f6;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1); /* Slightly more prominent shadow for active */
+}
+
+/* Styles for ellipsis (...) if you have it as a button or span */
+.pagination-controls .ellipsis {
+  /* If ellipsis is a separate element, apply similar button styling but without interaction */
+  font-size: 14px;
+  color: #4b5563;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.transactions-section {
+  background-color: #ffffff; /* Nền trắng */
+  border-radius: 8px; /* Bo góc nhẹ */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06); /* Shadow nhẹ nhàng */
+  padding: 20px; /* Padding bên trong */
+  margin-bottom: 20px; /* Khoảng cách với các phần tử khác */
+}
+
+/* Header của phần Transactions */
+.transactions-header {
+  display: flex;
+  justify-content: space-between; /* Đẩy "Transactions" sang trái và controls sang phải */
+  align-items: center;
+  padding-bottom: 15px; /* Khoảng cách dưới header */
+  /* border-bottom: 1px solid #e5e7eb;  Nếu muốn có đường kẻ dưới header */
+}
+
+/* Tiêu đề "Transactions" */
+.transactions-title {
+  font-size: 1.5rem; /* Kích thước chữ lớn hơn */
+  font-weight: 600; /* Đậm hơn */
+  color: #1f2937; /* Màu chữ đậm */
+  margin: 0; /* Loại bỏ margin mặc định của h2 */
+}
+
+/* Container cho tất cả các controls (search, dropdowns, buttons) */
+.transactions-controls {
+  display: flex;
+  gap: 10px; /* Khoảng cách giữa các control */
+  align-items: center;
+}
+
+/* Thanh tìm kiếm */
+.search-bar {
+  position: relative; /* Để định vị icon search */
+  display: flex;
+  align-items: center;
+  border: 1px solid #d1d5db; /* Viền xám nhạt */
+  border-radius: 6px; /* Bo góc nhẹ */
+  background-color: #f9fafb; /* Nền xám nhạt */
+  padding: 8px 12px; /* Padding bên trong */
+}
+
+.search-bar svg { /* Icon tìm kiếm */
+  color: #6b7280; /* Màu icon */
+  margin-right: 8px; /* Khoảng cách giữa icon và input */
+  width: 18px; /* Kích thước icon */
+  height: 18px;
+}
+
+.search-bar input {
+  border: none; /* Bỏ viền input */
+  outline: none; /* Bỏ outline khi focus */
+  background-color: transparent; /* Nền trong suốt */
+  font-size: 0.95rem; /* Kích thước chữ */
+  color: #374151; /* Màu chữ */
+  padding: 0; /* Bỏ padding mặc định của input */
+  width: 180px; /* Độ rộng của input, điều chỉnh theo ý muốn */
+}
+
+.search-bar input::placeholder {
+  color: #9ca3af; /* Màu placeholder */
+}
+
+/* Dropdown filters (All Status, Latest) */
+.filter-dropdown {
+  padding: 8px 12px; /* Padding bên trong */
+  border: 1px solid #d1d5db; /* Viền xám nhạt */
+  border-radius: 6px; /* Bo góc nhẹ */
+  background-color: #ffffff; /* Nền trắng */
+  font-size: 0.95rem; /* Kích thước chữ */
+  color: #374151; /* Màu chữ */
+  appearance: none; /* Bỏ style mặc định của select */
+  -webkit-appearance: none; /* Cho Safari */
+  -moz-appearance: none; /* Cho Firefox */
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%239ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>'); /* Icon mũi tên xuống */
+  background-repeat: no-repeat;
+  background-position: right 8px center; /* Vị trí icon */
+  padding-right: 30px; /* Tạo khoảng trống cho icon */
+  cursor: pointer;
+  outline: none; /* Bỏ outline khi focus */
+}
+
+.filter-dropdown:focus {
+  border-color: #3b82f6; /* Màu viền khi focus */
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); /* Shadow khi focus */
+}
+
+/* Buttons (Download và Filter) */
+.action-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px; /* Padding đều cho icon */
+  border: 1px solid #d1d5db; /* Viền xám nhạt */
+  border-radius: 6px; /* Bo góc nhẹ */
+  background-color: #ffffff; /* Nền trắng */
+  cursor: pointer;
+  transition: all 0.2s ease-in-out; /* Hiệu ứng chuyển động nhẹ */
+  outline: none;
+}
+
+.action-button svg {
+  width: 20px; /* Kích thước icon */
+  height: 20px;
+  color: #4b5563; /* Màu icon mặc định */
+}
+
+.action-button:hover {
+  background-color: #f3f4f6; /* Nền xám nhạt khi hover */
+  border-color: #cbd5e1;
+}
+
+/* Button chính (Download) */
+.action-button.primary {
+  background-color: #3b82f6; /* Màu nền xanh dương */
+  border-color: #3b82f6;
+}
+
+.action-button.primary svg {
+  color: #ffffff; /* Màu icon trắng */
+}
+
+.action-button.primary:hover {
+  background-color: #2563eb; /* Màu xanh đậm hơn khi hover */
+  border-color: #2563eb;
+}
