@@ -2,7 +2,11 @@ import { Request, Response } from 'express';
 import Dispute from '../models/Dispute.js';
 import EscrowTransaction from '../models/EscrowTransaction.js';
 import Notification from '../models/Notification.js';
+import dotenv from 'dotenv';
 import { v4 as uuidv4 } from 'uuid';
+import User from '../models/User.js';
+
+dotenv.config();
 
 // Buyer initiates dispute
 export const initiateDispute = async (req: Request, res: Response) => {
@@ -19,9 +23,18 @@ export const initiateDispute = async (req: Request, res: Response) => {
     });
     // Lock funds
     await EscrowTransaction.findByIdAndUpdate(escrowId, { status: 'dispute' });
+
     // Notify seller & admin
+    const seller = await User.findById(req.body.sellerId);
+    const sellerEmail = seller?.email;
     await Notification.create({ user_id: req.body.sellerId, message: 'A dispute has been opened.' });
+    if (sellerEmail) {
+      await Notification.sendNotification(sellerEmail, "Escrow system", "A dispute has been opened.");
+    }
+
     await Notification.create({ user_id: req.body.adminId, message: 'A new dispute requires review.' });
+    await Notification.sendNotification(process.env.MAIL_USER as string, "Escrow System", "A new dispute requires review.")
+
     res.json({ success: true, dispute });
   } catch (err) {
     res.status(500).json({ error: 'Failed to initiate dispute' });
@@ -38,8 +51,16 @@ export const respondDispute = async (req: Request, res: Response) => {
       { new: true }
     );
     // Notify buyer & admin
+    const buyer = await User.findById(req.body.buyerId);
+    const buyerEmail = buyer?.email;
     await Notification.create({ user_id: req.body.buyerId, message: 'Seller has responded to your dispute.' });
+    if (buyerEmail) {
+      await Notification.sendNotification(buyerEmail, "Escrow system", "Seller has responded to your dispute.");
+    }
+    
     await Notification.create({ user_id: req.body.adminId, message: 'Seller has responded to a dispute.' });
+    await Notification.sendNotification(process.env.MAIL_USER as string, "Escrow System", "Seller has responded to a dispute.")
+
     res.json({ success: true, dispute });
   } catch (err) {
     res.status(500).json({ error: 'Failed to respond to dispute' });
@@ -62,10 +83,24 @@ export const resolveDispute = async (req: Request, res: Response) => {
     if (action === 'refund') escrow.status = 'refunded';
     else if (action === 'release') escrow.status = 'completed';
     await escrow.save();
+
     // Notify all parties
+    const buyer = await User.findById(escrow.buyerId);
+    const buyerEmail = buyer?.email;
     await Notification.create({ user_id: escrow.buyerId, message: `Dispute resolved: ${action}` });
+    if (buyerEmail) {
+      await Notification.sendNotification(buyerEmail, "Escrow system", `Dispute resolved: ${action}`);
+    }
+    
+    const seller = await User.findById(escrow.sellerId);
+    const sellerEmail = seller?.email;
     await Notification.create({ user_id: escrow.sellerId, message: `Dispute resolved: ${action}` });
+    if (sellerEmail) {
+      await Notification.sendNotification(sellerEmail, "Escrow system", `Dispute resolved: ${action}`);
+    }
+
     await Notification.create({ user_id: req.body.adminId, message: 'Dispute has been resolved.' });
+    await Notification.sendNotification(process.env.MAIL_USER as string, "Escrow System", "Dispute has been resolved.")
     res.json({ success: true, dispute });
   } catch (err) {
     res.status(500).json({ error: 'Failed to resolve dispute' });
