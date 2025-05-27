@@ -20,24 +20,25 @@
   background-color: #6366f1; /* indigo-500 */
 }
 
+
 .red {
-  background-color: #ef4444; /* red-500 */
+  background-color: #ed5b5b; /* red-500 */
 }
 
 .green {
-  background-color: #10b981; /* green-500 */
+  background-color: #3bd5a1; /* green-500 */
 }
 
 .blue {
-  background-color: #3b82f6; /* blue-500 */
+  background-color: rgb(78, 137, 232); /* blue-500 */
 }
 
 .yellow {
-  background-color: #f59e0b; /* yellow-500 */
+  background-color: #efb551; /* yellow-500 */
 }
 
 .gray {
-  background-color: #6b7280; /* gray-500 */
+  background-color: #727986; /* gray-500 */
 }
 
 /* Grid layout for stats */

@@ -3,6 +3,7 @@ import axios from 'axios';
 import { API_URL } from '../../config';
 import AuthContext from '../../context/auth/authContext';
 import AlertContext from '../../context/alert/alertContext';
+import './DisputeCenter.css'; // Assuming you have a CSS file for styling
 
 const DisputeCenter = () => {
   const { user } = useContext(AuthContext);
@@ -29,6 +30,7 @@ const DisputeCenter = () => {
   if (loading) return <div className="spinner-container"><div className="spinner"></div></div>;
 
   return (
+    <div className="container-flex">
     <div className="main-content">
       <div className="card">
         <h2>Dispute Center</h2>
@@ -55,7 +57,7 @@ const DisputeCenter = () => {
                 <td>{d.escrowId?.buyerId}</td>
                 <td>{d.escrowId?.amount?.toLocaleString()} VND</td>
                 <td>{d.escrowId?.status}</td>
-                <td><span className={`badge badge-${d.status === 'resolved' ? 'success' : d.status === 'responded' ? 'info' : 'warning'}`}>{d.status}</span></td>
+                <td><span className={`badge-${d.status === 'resolved' ? 'success' : d.status === 'responded' ? 'info' : 'warning'}`}>{d.status}</span></td>
                 <td>{d.reason}</td>
                 <td><a href={`/dispute/${d._id}`}>View</a></td>
               </tr>
@@ -63,6 +65,7 @@ const DisputeCenter = () => {
           </tbody>
         </table>
       </div>
+    </div>
     </div>
   );
 };
